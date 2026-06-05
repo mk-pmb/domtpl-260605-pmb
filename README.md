@@ -13,7 +13,8 @@ Yet another HTML DOM templating library.
 Usage
 -----
 
-see [test/webmail.html](test/webmail.html).
+See [test/webmail.html](test/webmail.html),
+especially the comments in the HTML code.
 
 
 

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html><head>
+  <meta charset="UTF-8">
+  <title>Webmail Demo</title>
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="Content-Script-Type" content="text/javascript">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <style>
+    template, ins[template] { display: none !important; }
+    p, form { display: block; float: left; margin: 1em; }
+    form.webmail input[type="submit"][value=""]::before {
+      content: attr(data-user); }
+    form.webmail input[type="submit"]::after { content: attr(data-suffix); }
+    input.hotbutton { color: maroon; border: 1px solid maroon;
+      background-color: salmon; }
+  </style>
+</head><body>
+
+<p>Webmail Logins:</p>
+
+<template id="webmail-horde">
+<form action="https://webmail.«$domain»/login.php" method="post"
+  class="webmail" data-*="*">
+  <input type="hidden" name="app" value="" />
+  <input type="hidden" name="login_post" value="1" />
+  <input type="hidden" name="url" value="/imp/dynamic.php?page=mailbox" />
+  <input type="hidden" name="anchor_string" value="" />
+  <input type="hidden" name="horde_user" value="«$user»">
+  <input type="hidden" name="horde_pass" value="«$pswd»" />
+  <input type="hidden" name="horde_select_view" value="dynamic" />
+  <input type="hidden" name="new_lang" value="en_US" />
+  <input type="submit" name="" value="«$caption»«$suffix»" class="«$cls»">
+</form>
+</template>
+
+<template id="webmail-roundcube">
+  :TODO:
+</template>
+
+<template id="webmail" data-cls="" data-suffix="">
+<ins template="webmail-horde" data-*="*" data-caption="«$user»"></ins>
+</template>
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+
+Why put `data-*="*"` first? Because in case of an attribute name conflict,
+the first attribute wins (see spec quotes below).
+This means our later `data-caption=…` can define a default value that will be
+overwritten if a caption was provided. Conversely, if you want to override an
+inherited value, you'd have to put the override first.
+
+The HTML spec guarantees this behavior:
+
+* "There must never be two or more attributes on the same start tag whose
+  names are an ASCII case-insensitive match for each other."
+  — https://web.archive.org/web/20260605060553/https://html.spec.whatwg.org/multipage/syntax.html
+* "if there is already an attribute on the token with the exact same name,
+  […] the new attribute must be removed from the token."
+  — https://web.archive.org/web/20260605024901/https://html.spec.whatwg.org/multipage/parsing.html
+
+-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
+<ins template="webmail" data-domain="example.net"
+  data-user="admin" data-suffix="@ex"
+  data-pswd="▒▒▒▒▒"></ins>
+
+<ins template="webmail" data-domain="example.net"
+  data-user="urgent" data-cls="hotbutton"
+  data-pswd="▒▒▒▒▒"></ins>
+
+<ins template="webmail" data-domain="example.net"
+  data-user="webmaster" data-caption="🕸📫"
+  data-pswd="▒▒▒▒▒"></ins>
+
+<script src="../domtpl.js"></script>
+
+</body></html>
